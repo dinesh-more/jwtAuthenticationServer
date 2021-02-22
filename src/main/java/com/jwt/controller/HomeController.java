@@ -35,7 +35,7 @@ public class HomeController {
 		return "JWT-Server";
 	}
 
-	@RequestMapping(value = "/getuser")
+	@RequestMapping(value = "/")
 	public String getUser() {
 		return "{\"name\":\"Dinesh\"}";
 	}
