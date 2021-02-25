@@ -35,13 +35,30 @@ public class HomeController {
 		return "JWT-Server";
 	}
 
-	@RequestMapping(value = "/")
+	@RequestMapping(value = "/user")
 	public String getUser() {
 		return "{\"name\":\"Dinesh\"}";
 	}
 
+	/*
+	 * @PostMapping("/authenticate") public JwtResponse authenticate(@RequestBody
+	 * JwtRequest jwtRequest) throws Exception {
+	 * 
+	 * try { authenticationManager.authenticate( new
+	 * UsernamePasswordAuthenticationToken(jwtRequest.getUsername(),
+	 * jwtRequest.getPassword())); } catch (BadCredentialsException e) { throw new
+	 * Exception("INVALID_CREDENTIALS", e); }
+	 * 
+	 * final UserDetails userDetails =
+	 * userService.loadUserByUsername(jwtRequest.getUsername());
+	 * 
+	 * final String token = jwtUtility.generateToken(userDetails);
+	 * 
+	 * return new JwtResponse(token); }
+	 */
+	
 	@PostMapping("/authenticate")
-	public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
+	public String authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
 
 		try {
 			authenticationManager.authenticate(
@@ -54,6 +71,6 @@ public class HomeController {
 
 		final String token = jwtUtility.generateToken(userDetails);
 
-		return new JwtResponse(token);
+		return token;
 	}
 }
