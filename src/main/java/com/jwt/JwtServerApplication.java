@@ -13,9 +13,4 @@ public class JwtServerApplication {
 		SpringApplication.run(JwtServerApplication.class, args);
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
-	}
-
 }

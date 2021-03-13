@@ -2,24 +2,24 @@ package com.jwt.model;
 
 public class JwtResponse {
 
-	private String jwtToken;
+	private String token;
 
 	public JwtResponse() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public JwtResponse(String jwtToken) {
+	public JwtResponse(String token) {
 		super();
-		this.jwtToken = jwtToken;
+		this.token = token;
 	}
 
-	public String getJwtToken() {
-		return jwtToken;
+	public String getToken() {
+		return token;
 	}
 
-	public void setJwtToken(String jwtToken) {
-		this.jwtToken = jwtToken;
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

@@ -20,40 +20,51 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JWTUtility jwtUtility;
+	@Autowired
+	private JWTUtility jwtUtility;
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = httpServletRequest.getHeader("Authorization");
-        String token = null;
-        String userName = null;
+	@Override
+	protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+			FilterChain filterChain) throws ServletException, IOException {
 
-        if(null != authorization && authorization.startsWith("Bearer ")) {
-            token = authorization.substring(7);
-            userName = jwtUtility.getUsernameFromToken(token);
-        }
+		httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+		httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+		httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+		httpServletResponse.setHeader("Access-Control-Max-Age", "4200");
+		httpServletResponse.setHeader("Access-Control-Allow-Headers",
+				"Origin, X-Requested-With, Content-Type, Accept, Authorization");
 
-        if(null != userName && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails
-                    = userService.loadUserByUsername(userName);
+		String authorization = httpServletRequest.getHeader("Authorization");
+		String token = null;
+		String userName = null;
 
-            if(jwtUtility.validateToken(token,userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
-                        = new UsernamePasswordAuthenticationToken(userDetails,
-                        null, userDetails.getAuthorities());
+		System.out.println("authorization header : " + authorization);
 
-                usernamePasswordAuthenticationToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
-                );
+		if (null != authorization && authorization.startsWith("Bearer ")) {
+			token = authorization.substring(7);
+			System.out.println("Filter Token : " + token);
 
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
+			userName = jwtUtility.getUsernameFromToken(token);
+			System.out.println("Filter userName : " + userName);
+		}
 
-        }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
-    }
+		if (null != userName && SecurityContextHolder.getContext().getAuthentication() == null) {
+			UserDetails userDetails = userService.loadUserByUsername(userName);
+
+			if (jwtUtility.validateToken(token, userDetails)) {
+				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+						userDetails, null, userDetails.getAuthorities());
+
+				usernamePasswordAuthenticationToken
+						.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+
+				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+			}
+
+		}
+		filterChain.doFilter(httpServletRequest, httpServletResponse);
+	}
 }
